@@ -1,6 +1,7 @@
 import logging
 import sys
 import torch
+from PIL import Image
 from diffusers import StableDiffusionPipeline
 
 # Налаштування логування
@@ -42,19 +43,23 @@ def generate_portrait():
         pipe.to(device)
         
         prompt = "A classical oil painting of a distinguished lady, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
+        negative_prompt = """deformed, distorted, disfigured, 
+                           bad anatomy, changed face, different face,
+                           extra limbs, extra fingers, extra features,
+                           duplicate, multiple faces, blurry, 
+                           bad art, cartoon, anime, sketchy"""
+        
         logger.info(f"Generating image with prompt: {prompt}")
         
-        strength = 0.35  # Мінімальна сила трансформації для збереження обличчя
-        guidance_scale = 9.0  # Збільшуємо для кращого дотримання промпту
+        # Параметри генерації
         num_inference_steps = 200  # Максимальна кількість кроків для деталізації
+        guidance_scale = 9.0  # Збільшуємо для кращого дотримання промпту
         
         image = pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
-            image=composite,
-            strength=strength,
-            guidance_scale=guidance_scale,
-            num_inference_steps=num_inference_steps
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale
         ).images[0]
         
         output_path = "generated_portrait.png"
