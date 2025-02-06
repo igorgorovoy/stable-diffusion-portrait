@@ -68,7 +68,7 @@ def generate_portrait_from_references():
         prompt = """Ultra realistic oil painting in the style of Edmond de Belamy,
                    exact same face and facial features as the reference image,
                    masterful portrait in classical 18th-century style,
-                   dark mysterious Rembrandt-style background,
+                   dark mysteriousbackground,
                    professional oil painting texture on vintage canvas,
                    maintain precise facial structure and expression,
                    elegant aristocratic atmosphere, 
