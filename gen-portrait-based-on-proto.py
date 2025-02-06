@@ -30,14 +30,12 @@ def check_dependencies():
 def prepare_image(image_path, target_size=(512, 512)):
     """Підготовка зображення до потрібного формату"""
     image = Image.open(image_path)
-    # Конвертуємо в RGB якщо потрібно
     if image.mode != 'RGB':
         image = image.convert('RGB')
-    # Змінюємо розмір зі збереженням пропорцій
+    # Збільшуємо розмір для кращої деталізації
+    target_size = (768, 768)  # Збільшений розмір для кращої якості
     image.thumbnail(target_size, Image.Resampling.LANCZOS)
-    # Створюємо нове зображення з білим фоном
     new_image = Image.new('RGB', target_size, (255, 255, 255))
-    # Вставляємо оригінальне зображення по центру
     offset = ((target_size[0] - image.size[0]) // 2,
               (target_size[1] - image.size[1]) // 2)
     new_image.paste(image, offset)
@@ -47,15 +45,14 @@ def generate_portrait_from_references():
     try:
         check_dependencies()
         
-        # Завантажуємо та підготовлюємо зображення
         logger.info("Loading and preparing reference images...")
         my_image = prepare_image("iam.png")
         belamy_image = prepare_image("Edmond_de_Belamy.png")
         
-        # Створюємо композитне зображення як основу
-        composite = Image.blend(my_image, belamy_image, 0.8)
+        # Використовуємо ваше фото як основу
+        composite = my_image  # Без змішування, використовуємо тільки ваше фото
         composite.save("composite_reference.png")
-        logger.info("Created composite reference image")
+        logger.info("Prepared reference image")
         
         logger.info("Initializing Stable Diffusion img2img pipeline...")
         model_id = "CompVis/stable-diffusion-v1-4"
@@ -68,22 +65,28 @@ def generate_portrait_from_references():
         )
         pipe.to(device)
         
-        prompt = """A masterful oil painting in the style of Edmond de Belamy, 
-                   portrait in classical 18th-century style, 
-                   dark mysterious background, Rembrandt lighting, 
-                   realistic details, old canvas texture, 
-                   elegant and sophisticated atmosphere"""
+        prompt = """Ultra realistic oil painting in the style of Edmond de Belamy,
+                   exact same face and facial features as the reference image,
+                   masterful portrait in classical 18th-century style,
+                   dark mysterious Rembrandt-style background,
+                   professional oil painting texture on vintage canvas,
+                   maintain precise facial structure and expression,
+                   elegant aristocratic atmosphere, 
+                   detailed facial features, sharp focus on face,
+                   museum quality artwork, masterpiece quality"""
         
-        negative_prompt = "cartoon, anime, sketchy, double image, duplicate, deformed"
-        
-        logger.info(f"Generating image with prompt: {prompt}")
+        negative_prompt = """deformed, distorted, disfigured, 
+                           bad anatomy, changed face, different face,
+                           extra limbs, extra fingers, extra features,
+                           duplicate, multiple faces, blurry, 
+                           bad art, cartoon, anime, sketchy,
+                           photograph, photographic, digital art"""
         
         # Параметри генерації
-        strength = 0.65  # Трохи менше, щоб зберегти більше деталей оригіналу
-        guidance_scale = 8.5  # Трохи вище для кращого дотримання стилю
-        num_inference_steps = 100  # Більше кроків для кращої якості
+        strength = 0.35  # Мінімальна сила трансформації для збереження обличчя
+        guidance_scale = 9.0  # Збільшуємо для кращого дотримання промпту
+        num_inference_steps = 200  # Максимальна кількість кроків для деталізації
         
-        # Генеруємо зображення
         image = pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
@@ -93,7 +96,7 @@ def generate_portrait_from_references():
             num_inference_steps=num_inference_steps
         ).images[0]
         
-        output_path = "generated_belamy_portrait.png"
+        output_path = "generated_belamy_portrait_face.png"
         image.save(output_path)
         logger.info(f"Image saved to: {output_path}")
         

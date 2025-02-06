@@ -41,10 +41,21 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        prompt = "A classical oil painting of a distinguished gentleman, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
+        prompt = "A classical oil painting of a distinguished lady, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
         logger.info(f"Generating image with prompt: {prompt}")
         
-        image = pipe(prompt).images[0]
+        strength = 0.35  # Мінімальна сила трансформації для збереження обличчя
+        guidance_scale = 9.0  # Збільшуємо для кращого дотримання промпту
+        num_inference_steps = 200  # Максимальна кількість кроків для деталізації
+        
+        image = pipe(
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            image=composite,
+            strength=strength,
+            guidance_scale=guidance_scale,
+            num_inference_steps=num_inference_steps
+        ).images[0]
         
         output_path = "generated_portrait.png"
         image.save(output_path)
