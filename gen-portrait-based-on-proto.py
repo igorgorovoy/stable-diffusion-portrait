@@ -65,10 +65,10 @@ def generate_portrait_from_references():
         )
         pipe.to(device)
         
-        prompt = """Ultra realistic oil painting in the style of Edmond de Belamy,
-                   exact same face and facial features as the reference image,
+        prompt = """take exact same face and combine with face on Edmond_de_Belamy.png,
+                 facial features as the reference image,
                    masterful portrait in classical 18th-century style,
-                   dark mysteriousbackground,
+                   dark mysteriousbackground, as a Tarot card,
                    professional oil painting texture on vintage canvas,
                    maintain precise facial structure and expression,
                    elegant aristocratic atmosphere, 
