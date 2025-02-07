@@ -46,8 +46,10 @@ def generate_portrait_from_references():
         check_dependencies()
         
         logger.info("Loading and preparing reference images...")
-        my_image = prepare_image("iam.png")
-        belamy_image = prepare_image("Edmond_de_Belamy.png")
+        # Збільшуємо цільовий розмір для кращої якості
+        target_size = (1024, 1024)
+        my_image = prepare_image("iam.png", target_size)
+        belamy_image = prepare_image("Edmond_de_Belamy.png", target_size)
         
         # Використовуємо ваше фото як основу
         composite = my_image  # Без змішування, використовуємо тільки ваше фото
@@ -93,10 +95,12 @@ def generate_portrait_from_references():
             image=composite,
             strength=strength,
             guidance_scale=guidance_scale,
-            num_inference_steps=num_inference_steps
+            num_inference_steps=num_inference_steps,
+            height=1024,
+            width=1024
         ).images[0]
         
-        output_path = "generated_belamy_portrait_face.png"
+        output_path = "generated_belamy_portrait_face_1024.png"
         image.save(output_path)
         logger.info(f"Image saved to: {output_path}")
         

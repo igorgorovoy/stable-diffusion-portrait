@@ -2,6 +2,7 @@ import logging
 import sys
 import torch
 from diffusers import StableDiffusionPipeline
+from datetime import datetime
 
 # Налаштування логування
 logging.basicConfig(
@@ -27,7 +28,6 @@ def check_dependencies():
 
 def generate_portrait():
     try:
-        # Перевіряємо залежності
         check_dependencies()
         
         logger.info("Initializing Stable Diffusion pipeline...")
@@ -41,20 +41,28 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        #prompt = "A classical oil painting of Angel, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
         prompt = "A classical oil painting Wooman with 10 tits, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
+        negative_prompt = """deformed, distorted, disfigured, 
+                           bad anatomy, changed face, different face,
+                           extra limbs, extra fingers, extra features,
+                           duplicate, multiple faces, blurry, 
+                           bad art, cartoon, anime, sketchy"""
+        
         logger.info(f"Generating image with prompt: {prompt}")
         
-        # Встановлюємо більший розмір зображення (1024x1024)
+        # Встановлюємо більший розмір зображення та параметри для кращої якості
         image = pipe(
-            prompt,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
             height=1024,
             width=1024,
-            num_inference_steps=100,
-            guidance_scale=7.5
+            num_inference_steps=200,  # Збільшуємо кількість кроків
+            guidance_scale=9.0  # Збільшуємо для кращого дотримання промпту
         ).images[0]
         
-        output_path = "generated_portrait_diffusion_1024.png"
+        # Додаємо timestamp до імені файлу
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_path = f"generated_portrait_diffusion_{timestamp}_1024.png"
         image.save(output_path)
         logger.info(f"Image saved to: {output_path}")
         
