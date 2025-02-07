@@ -41,12 +41,20 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        prompt = "A classical oil painting of a black cat, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
+        #prompt = "A classical oil painting of Angel, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
+        prompt = "A classical oil painting Wooman with 10 tits, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
         logger.info(f"Generating image with prompt: {prompt}")
         
-        image = pipe(prompt).images[0]
+        # Встановлюємо більший розмір зображення (1024x1024)
+        image = pipe(
+            prompt,
+            height=1024,
+            width=1024,
+            num_inference_steps=100,
+            guidance_scale=7.5
+        ).images[0]
         
-        output_path = "generated_portrait_diffusion.png"
+        output_path = "generated_portrait_diffusion_1024.png"
         image.save(output_path)
         logger.info(f"Image saved to: {output_path}")
         
