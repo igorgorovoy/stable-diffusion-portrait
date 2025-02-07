@@ -41,7 +41,7 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        prompt = "A classical oil painting of a distinguished gentleman, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
+        prompt = "A classical oil painting of a black cat, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
         logger.info(f"Generating image with prompt: {prompt}")
         
         image = pipe(prompt).images[0]
