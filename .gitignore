@@ -1,6 +1,4 @@
-# Згенеровані зображення
-generated_*.png
-*.png
+
 
 # Python
 __pycache__/
