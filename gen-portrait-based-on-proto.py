@@ -27,13 +27,11 @@ def check_dependencies():
         logger.error(f"Missing dependency: {str(e)}")
         sys.exit(1)
 
-def prepare_image(image_path, target_size=(512, 512)):
+def prepare_image(image_path, target_size=(1024, 1024)):
     """Підготовка зображення до потрібного формату"""
     image = Image.open(image_path)
     if image.mode != 'RGB':
         image = image.convert('RGB')
-    # Збільшуємо розмір для кращої деталізації
-    target_size = (768, 768)  # Збільшений розмір для кращої якості
     image.thumbnail(target_size, Image.Resampling.LANCZOS)
     new_image = Image.new('RGB', target_size, (255, 255, 255))
     offset = ((target_size[0] - image.size[0]) // 2,
@@ -46,15 +44,15 @@ def generate_portrait_from_references():
         check_dependencies()
         
         logger.info("Loading and preparing reference images...")
-        # Збільшуємо цільовий розмір для кращої якості
-        target_size = (1024, 1024)
+        target_size = (512, 512)
         my_image = prepare_image("iam.png", target_size)
         belamy_image = prepare_image("Edmond_de_Belamy.png", target_size)
         
-        # Використовуємо ваше фото як основу
-        composite = my_image  # Без змішування, використовуємо тільки ваше фото
+        # Створюємо композитне зображення, змішуючи обидва зображення
+        # Використовуємо більше впливу від вашого фото (0.7) і менше від Беламі (0.3)
+        composite = Image.blend(my_image, belamy_image, 0.3)
         composite.save("composite_reference.png")
-        logger.info("Prepared reference image")
+        logger.info("Created composite reference image")
         
         logger.info("Initializing Stable Diffusion img2img pipeline...")
         model_id = "CompVis/stable-diffusion-v1-4"
@@ -67,15 +65,16 @@ def generate_portrait_from_references():
         )
         pipe.to(device)
         
-        prompt = """take exact same face and combine with face on Edmond_de_Belamy.png,
-                 facial features as the reference image,
-                   masterful portrait in classical 18th-century style,
-                   dark mysteriousbackground, as a Tarot card,
-                   professional oil painting texture on vintage canvas,
-                   maintain precise facial structure and expression,
-                   elegant aristocratic atmosphere, 
-                   detailed facial features, sharp focus on face,
-                   museum quality artwork, masterpiece quality"""
+        prompt = """save face relistic 
+                 maintain facial features from the first image (iam.png),
+                 apply artistic style from Edmond de Belamy painting,
+                 keep the exact same face structure and expression,
+                 dark mysterious background like in Edmond de Belamy,
+                 professional oil painting texture on vintage canvas,
+                 elegant aristocratic atmosphere, 
+                 detailed facial features, sharp focus on face,
+                 museum quality artwork, masterpiece quality,
+                 GAN art style, Obvious collective style"""
         
         negative_prompt = """deformed, distorted, disfigured, 
                            bad anatomy, changed face, different face,
@@ -84,10 +83,10 @@ def generate_portrait_from_references():
                            bad art, cartoon, anime, sketchy,
                            photograph, photographic, digital art"""
         
-        # Параметри генерації
-        strength = 0.35  # Мінімальна сила трансформації для збереження обличчя
-        guidance_scale = 9.0  # Збільшуємо для кращого дотримання промпту
-        num_inference_steps = 200  # Максимальна кількість кроків для деталізації
+        # Зменшуємо strength, щоб зберегти більше деталей з композитного зображення
+        strength = 0.65  # Менша сила трансформації для збереження рис обличчя
+        guidance_scale = 12.0  # Високе значення для кращого дотримання стилю
+        num_inference_steps = 50  # Максимальна кількість кроків для деталізації
         
         image = pipe(
             prompt=prompt,

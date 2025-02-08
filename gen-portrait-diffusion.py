@@ -41,12 +41,14 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        prompt = "A classical oil painting Wooman with 10 tits, 18th-century style, dark background, Rembrandt lighting, realistic, old canvas texture"
-        negative_prompt = """deformed, distorted, disfigured, 
-                           bad anatomy, changed face, different face,
-                           extra limbs, extra fingers, extra features,
-                           duplicate, multiple faces, blurry, 
-                           bad art, cartoon, anime, sketchy"""
+        prompt = "A classical frame for pictures in musiem baroque style, realistic, woodcarved"
+        negative_prompt = ""
+
+        # negative_prompt = """deformed, distorted, disfigured, 
+        #                    changed face, different face,
+        #                    extra limbs, extra fingers, extra features,
+        #                    duplicate, multiple faces, blurry, 
+        #                    bad art, cartoon, anime, sketchy"""
         
         logger.info(f"Generating image with prompt: {prompt}")
         
@@ -54,8 +56,8 @@ def generate_portrait():
         image = pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
-            height=1024,
-            width=1024,
+            height=512,
+            width=512,
             num_inference_steps=200,  # Збільшуємо кількість кроків
             guidance_scale=9.0  # Збільшуємо для кращого дотримання промпту
         ).images[0]
