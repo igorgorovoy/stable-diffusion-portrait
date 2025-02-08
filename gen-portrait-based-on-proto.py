@@ -44,7 +44,7 @@ def generate_portrait_from_references():
         check_dependencies()
         
         logger.info("Loading and preparing reference images...")
-        target_size = (1024, 1024)
+        target_size = (512, 512)
         my_image = prepare_image("iam.png", target_size)
         belamy_image = prepare_image("Edmond_de_Belamy.png", target_size)
         
@@ -65,7 +65,7 @@ def generate_portrait_from_references():
         )
         pipe.to(device)
         
-        prompt = """transform this composite image,
+        prompt = """save face relistic 
                  maintain facial features from the first image (iam.png),
                  apply artistic style from Edmond de Belamy painting,
                  keep the exact same face structure and expression,
@@ -86,7 +86,7 @@ def generate_portrait_from_references():
         # Зменшуємо strength, щоб зберегти більше деталей з композитного зображення
         strength = 0.65  # Менша сила трансформації для збереження рис обличчя
         guidance_scale = 12.0  # Високе значення для кращого дотримання стилю
-        num_inference_steps = 200  # Максимальна кількість кроків для деталізації
+        num_inference_steps = 50  # Максимальна кількість кроків для деталізації
         
         image = pipe(
             prompt=prompt,
