@@ -44,13 +44,12 @@ def generate_portrait_from_references():
         check_dependencies()
         
         logger.info("Loading and preparing reference images...")
-        target_size = (512, 512)
+        target_size = (1024, 1024)
         my_image = prepare_image("iam.png", target_size)
         belamy_image = prepare_image("Edmond_de_Belamy.png", target_size)
         
-        # Створюємо композитне зображення, змішуючи обидва зображення
-        # Використовуємо більше впливу від вашого фото (0.7) і менше від Беламі (0.3)
-        composite = Image.blend(my_image, belamy_image, 0.3)
+        # Змінюємо баланс змішування
+        composite = Image.blend(my_image, belamy_image, 0.2)  # Зменшуємо вплив картини Беламі
         composite.save("composite_reference.png")
         logger.info("Created composite reference image")
         
@@ -65,29 +64,28 @@ def generate_portrait_from_references():
         )
         pipe.to(device)
         
-        prompt = """save face relistic 
-                 maintain facial features from the first image (iam.png),
-                 apply artistic style from Edmond de Belamy painting,
-                 keep the exact same face structure and expression,
-                 dark mysterious background like in Edmond de Belamy,
-                 professional oil painting texture on vintage canvas,
-                 elegant aristocratic atmosphere, 
-                 detailed facial features, sharp focus on face,
-                 museum quality artwork, masterpiece quality,
-                 GAN art style, Obvious collective style"""
+        # Оновлений промпт - зробимо його простішим і конкретнішим
+        prompt = """portrait painting in classical style,
+                   keep the exact face from reference photo,
+                   oil painting on canvas,
+                   soft natural lighting,
+                   warm colors,
+                   light background,
+                   detailed face,
+                   professional portrait,
+                   high quality"""
         
-        negative_prompt = """deformed, distorted, disfigured, 
-                           bad anatomy, changed face, different face,
-                           extra limbs, extra fingers, extra features,
-                           duplicate, multiple faces, blurry, 
-                           bad art, cartoon, anime, sketchy,
-                           photograph, photographic, digital art"""
+        # Спростимо негативний промпт
+        negative_prompt = """dark, black background, deformed,
+                           bad anatomy, bad proportions,
+                           blurry, low quality"""
         
-        # Зменшуємо strength, щоб зберегти більше деталей з композитного зображення
-        strength = 0.65  # Менша сила трансформації для збереження рис обличчя
-        guidance_scale = 12.0  # Високе значення для кращого дотримання стилю
-        num_inference_steps = 50  # Максимальна кількість кроків для деталізації
+        # Змінюємо параметри генерації
+        strength = 0.45  # Зменшуємо силу трансформації щоб зберегти більше від оригіналу
+        guidance_scale = 5.5  # Зменшуємо для м'якішого результату
+        num_inference_steps = 50  # Зменшуємо кількість кроків
         
+        logger.info("Starting image generation...")
         image = pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
@@ -95,11 +93,11 @@ def generate_portrait_from_references():
             strength=strength,
             guidance_scale=guidance_scale,
             num_inference_steps=num_inference_steps,
-            height=1024,
-            width=1024
+            height=768,  # Трохи зменшимо розмір
+            width=768
         ).images[0]
         
-        output_path = "generated_belamy_portrait_face_1024.png"
+        output_path = "generated_portrait_blend_1024.png"
         image.save(output_path)
         logger.info(f"Image saved to: {output_path}")
         

@@ -43,7 +43,7 @@ def generate_portrait(num_images=1):
         )
         pipe.to(device)
         
-        prompt = "A classical oil painting of a distinguished lady, 18th-century style, dark background, Durer lighting, realistic, old canvas texture"
+        prompt = "Draw beautiful naked woman, 18th-century style, dark background, lighting, realistic, old canvas texture"
         negative_prompt = """deformed, distorted, disfigured, 
                            bad anatomy, changed face, different face,
                            extra limbs, extra fingers, extra features,
@@ -63,8 +63,8 @@ def generate_portrait(num_images=1):
                 negative_prompt=negative_prompt,
                 num_inference_steps=num_inference_steps,
                 guidance_scale=guidance_scale,
-                height=1024,
-                width=1024
+                height=512,
+                width=512
             ).images[0]
             
             # Формуємо ім'я файлу з датою та номером ітерації
