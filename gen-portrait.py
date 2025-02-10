@@ -43,38 +43,36 @@ def generate_portrait(num_images=1):
         )
         pipe.to(device)
         
-        prompt = "Draw beautiful naked woman, 18th-century style, dark background, lighting, realistic, old canvas texture"
-        negative_prompt = """deformed, distorted, disfigured, 
-                           bad anatomy, changed face, different face,
-                           extra limbs, extra fingers, extra features,
-                           duplicate, multiple faces, blurry, 
-                           bad art, cartoon, anime, sketchy"""
+        prompt = """portrait of a distinguished gentleman,
+                   19th century classical oil painting,
+                   realistic detailed face,
+                   brown formal jacket,
+                   professional studio lighting,
+                   elegant pose,
+                   high quality fine art"""
+        
+        negative_prompt = """ugly, deformed, blurry,
+                           poor quality, low quality,
+                           cartoon style, anime"""
         
         # Параметри генерації
-        num_inference_steps = 200  # Максимальна кількість кроків для деталізації
-        guidance_scale = 9.0  # Збільшуємо для кращого дотримання промпту
+        image = pipe(
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            height=512,
+            width=512,
+            num_inference_steps=100,
+            guidance_scale=7.5
+        ).images[0]
         
-        # Генеруємо задану кількість зображень
-        for i in range(num_images):
-            logger.info(f"Generating image {i+1}/{num_images}")
-            
-            image = pipe(
-                prompt=prompt,
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps,
-                guidance_scale=guidance_scale,
-                height=512,
-                width=512
-            ).images[0]
-            
-            # Формуємо ім'я файлу з датою та номером ітерації
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_path = f"generated_portrait_{timestamp}_1024_iter{i+1}.png"
-            
-            image.save(output_path)
-            logger.info(f"Image saved to: {output_path}")
-            
-            image.show()
+        # Формуємо ім'я файлу з датою та номером ітерації
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_path = f"generated_portrait_{timestamp}_1024_iter1.png"
+        
+        image.save(output_path)
+        logger.info(f"Image saved to: {output_path}")
+        
+        image.show()
         
     except Exception as e:
         logger.error(f"Error during image generation: {str(e)}")

@@ -41,14 +41,19 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        prompt = "A classical frame for pictures in musiem baroque style, realistic, woodcarved"
-        negative_prompt = ""
-
-        # negative_prompt = """deformed, distorted, disfigured, 
-        #                    changed face, different face,
-        #                    extra limbs, extra fingers, extra features,
-        #                    duplicate, multiple faces, blurry, 
-        #                    bad art, cartoon, anime, sketchy"""
+        prompt = """portrait of a man with mustache in classical oil painting style,
+                   19th century aristocratic portrait,
+                   brown jacket, white collar,
+                   natural skin tones,
+                   detailed facial features,
+                   professional Rembrandt lighting,
+                   neutral dark background,
+                   museum quality painting,
+                   high detail"""
+        
+        negative_prompt = """ugly, deformed, blurry, bad art,
+                           poor quality, low quality,
+                           cartoon, anime, 3d, digital art"""
         
         logger.info(f"Generating image with prompt: {prompt}")
         
@@ -58,8 +63,8 @@ def generate_portrait():
             negative_prompt=negative_prompt,
             height=512,
             width=512,
-            num_inference_steps=200,  # Збільшуємо кількість кроків
-            guidance_scale=9.0  # Збільшуємо для кращого дотримання промпту
+            num_inference_steps=100,
+            guidance_scale=7.5
         ).images[0]
         
         # Додаємо timestamp до імені файлу

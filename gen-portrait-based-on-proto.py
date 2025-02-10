@@ -49,7 +49,7 @@ def generate_portrait_from_references():
         belamy_image = prepare_image("Edmond_de_Belamy.png", target_size)
         
         # Змінюємо баланс змішування
-        composite = Image.blend(my_image, belamy_image, 0.2)  # Зменшуємо вплив картини Беламі
+        composite = Image.blend(my_image, belamy_image, 0.15)  # Ще менше впливу картини Беламі
         composite.save("composite_reference.png")
         logger.info("Created composite reference image")
         
@@ -64,37 +64,37 @@ def generate_portrait_from_references():
         )
         pipe.to(device)
         
-        # Оновлений промпт - зробимо його простішим і конкретнішим
-        prompt = """portrait painting in classical style,
-                   keep the exact face from reference photo,
-                   oil painting on canvas,
-                   soft natural lighting,
-                   warm colors,
-                   light background,
-                   detailed face,
-                   professional portrait,
-                   high quality"""
+        # Оновлений промпт з урахуванням стилю зображення
+        prompt = """portrait of a man with mustache,
+                   realistic oil painting,
+                   classical portrait style,
+                   brown jacket, white collar,
+                   natural skin tones,
+                   detailed facial features,
+                   professional lighting,
+                   neutral background,
+                   high quality painting"""
         
         # Спростимо негативний промпт
-        negative_prompt = """dark, black background, deformed,
-                           bad anatomy, bad proportions,
-                           blurry, low quality"""
+        negative_prompt = """ugly, deformed, blurry, bad art,
+                           poor quality, low quality,
+                           extra features, double image"""
         
-        # Змінюємо параметри генерації
-        strength = 0.45  # Зменшуємо силу трансформації щоб зберегти більше від оригіналу
-        guidance_scale = 5.5  # Зменшуємо для м'якішого результату
-        num_inference_steps = 50  # Зменшуємо кількість кроків
+        # Налаштування параметрів
+        strength = 0.35  # Зменшуємо силу трансформації
+        guidance_scale = 7.5  # Середнє значення для балансу
+        num_inference_steps = 75  # Оптимальна кількість кроків
         
         logger.info("Starting image generation...")
         image = pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
             image=composite,
-            strength=strength,
+            strength=strength,  # Менша сила трансформації
             guidance_scale=guidance_scale,
             num_inference_steps=num_inference_steps,
-            height=768,  # Трохи зменшимо розмір
-            width=768
+            height=512,  # Зменшуємо розмір для тестування
+            width=512
         ).images[0]
         
         output_path = "generated_portrait_blend_1024.png"
