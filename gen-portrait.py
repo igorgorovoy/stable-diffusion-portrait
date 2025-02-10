@@ -43,13 +43,7 @@ def generate_portrait(num_images=1):
         )
         pipe.to(device)
         
-        prompt = """portrait of a distinguished gentleman,
-                   19th century classical oil painting,
-                   realistic detailed face,
-                   brown formal jacket,
-                   professional studio lighting,
-                   elegant pose,
-                   high quality fine art"""
+        prompt = """naked woman big body in full growth, Venus of Willendorf ealistic detailed face, elegant pose, high quality fine art"""
         
         negative_prompt = """ugly, deformed, blurry,
                            poor quality, low quality,

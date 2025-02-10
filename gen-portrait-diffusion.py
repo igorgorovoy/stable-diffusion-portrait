@@ -41,8 +41,8 @@ def generate_portrait():
         )
         pipe.to(device)
         
-        prompt = """portrait of a man with mustache in classical oil painting style,
-                   19th century aristocratic portrait,
+        prompt = """portrait of a цщьфт with mustache in classical oil painting style,
+                   18th century aristocratic portrait,
                    brown jacket, white collar,
                    natural skin tones,
                    detailed facial features,
