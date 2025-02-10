@@ -43,7 +43,7 @@ def generate_portrait(num_images=1):
         )
         pipe.to(device)
         
-        prompt = """naked woman big body in full growth, Venus of Willendorf ealistic detailed face, elegant pose, high quality fine art"""
+        prompt = """portrait woman in full grouth in classical oil painting style ealistic detailed face, elegant pose, high quality fine art"""
         
         negative_prompt = """ugly, deformed, blurry,
                            poor quality, low quality,
