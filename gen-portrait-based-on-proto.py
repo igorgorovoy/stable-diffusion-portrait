@@ -45,8 +45,8 @@ def generate_portrait_from_references():
         
         logger.info("Loading and preparing reference images...")
         target_size = (1024, 1024)
-        my_image = prepare_image("iam.png", target_size)
-        belamy_image = prepare_image("Edmond_de_Belamy.png", target_size)
+        my_image = prepare_image("tigra.jpg", target_size)
+        belamy_image = prepare_image("iam.png", target_size)
         
         # Змінюємо баланс змішування
         composite = Image.blend(my_image, belamy_image, 0.15)  # Ще менше впливу картини Беламі
@@ -65,15 +65,7 @@ def generate_portrait_from_references():
         pipe.to(device)
         
         # Оновлений промпт з урахуванням стилю зображення
-        prompt = """portrait of a man with mustache,
-                   realistic oil painting,
-                   classical portrait style,
-                   brown jacket, white collar,
-                   natural skin tones,
-                   detailed facial features,
-                   professional lighting,
-                   neutral background,
-                   high quality painting"""
+        prompt = """portrait of the cat in the style of the painting by Edouard Manet, pennant and monogram"""
         
         # Спростимо негативний промпт
         negative_prompt = """ugly, deformed, blurry, bad art,
